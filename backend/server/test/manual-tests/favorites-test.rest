@@ -1,0 +1,2 @@
+GET http://localhost:8081/favorites/joe
+Content-Type: application/json
