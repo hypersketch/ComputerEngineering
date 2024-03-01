@@ -12,9 +12,12 @@ router.get('/:username/:favorite', async (req, res) => {
         res.status(408).send("UserID not found")
         
     }else{
-        const fav = await favoritesModel.findOne({username: username,
+        const fav = await favoritesModel.find({username: username,
             favoriteName: favorite})
-        if (!fav){
+        /* if(!fav) : findOne() returns object or null. find() returns array of objects or empty array. 
+        If inbound/outbound filter is implemented then findOne will be used with this "NOT NULL if statement"
+        */
+        if (fav.length==0){
             res.status(409).send("Favorite not found")
         } else{
             return res.json(fav)
