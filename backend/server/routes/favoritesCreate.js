@@ -31,7 +31,7 @@ router.post('/create', async (req, res) => {
         
         res.send(saveNewFav)
     } catch (error) {
-        res.status(410).send({message: "Failed to create new favorite",
+        res.status(410).send({message: "Failed to create new favorite", error: error
     })
     }
     })
