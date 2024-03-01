@@ -1,12 +1,11 @@
 GET http://localhost:8081/favorites/josue1
-Content-Type: application/json
 ###
 POST http://localhost:8081/favorites/create
 Content-Type: application/json
 
 {
-    "username": "josue1",
-    "favoriteName": "Salem450",
+    "username": "josue2",
+    "favoriteName": null,
     "direction" : "inbound"
 }
 ###
