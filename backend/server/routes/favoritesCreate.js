@@ -9,8 +9,7 @@ router.post('/create', async (req, res) => {
     const direction= req.body.direction
 
     const fav = await favoritesModel.findOne({ username: username , 
-        favoriteName: favoriteName, 
-        direction: direction})
+        favoriteName: favoriteName})
     if (fav){
         return res.status(407).send({ message: "This specific favorite already exists", status: res.statusCode })
     } else {

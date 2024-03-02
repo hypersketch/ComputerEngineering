@@ -3,10 +3,10 @@ const router = express.Router();
 const favoritesModel = require("../models/favoritesModel")
 const newUserModel = require('../models/userModel')
 
-router.get('/:username/:favorite', async (req, res) => {
-    const username = req.params.username
-    const favoriteName = req.params.favorite
+router.delete('/deleteFavorite', async (req, res) => {
     
+    const username= req.body.username
+    const favoriteName= req.body.favoriteName
     const user = await newUserModel.findOne({username: username})
     if (!user){
         res.status(408).send("UserID not found")
@@ -17,13 +17,12 @@ router.get('/:username/:favorite', async (req, res) => {
         if (!fav){
             res.status(409).send("Favorite not found")
         } else{
-            return res.json(fav)
+            // delete favorite
+            await favoritesModel.findByIdAndDelete(fav)
+            return res.json({success: "True"})
         }
 
     }
-    
-    
-    })
-    
 
-  module.exports = router;
+})
+module.exports = router;
