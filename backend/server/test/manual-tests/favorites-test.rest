@@ -10,3 +10,5 @@ Content-Type: application/json
     "direction" : "inbound"
 }
 ###
+GET http://localhost:8081/favorites/josue1/Salem457
+Content-Type: application/json
