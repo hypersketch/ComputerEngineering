@@ -1,14 +1,34 @@
 GET http://localhost:8081/favorites/josue1
-Content-Type: application/json
 ###
 POST http://localhost:8081/favorites/create
 Content-Type: application/json
 
 {
     "username": "josue1",
-    "favoriteName": "Salem450",
-    "direction" : "inbound"
+    "favoriteName": "Salem455",
+    "direction" : "outboundd"
 }
 ###
+<<<<<<< HEAD
 GET http://localhost:8081/favorites/josue1/Salem457
 Content-Type: application/json
+=======
+GET http://localhost:8081/favorites/josue1/Salem455
+###
+PATCH http://localhost:8081/favorites/editFavorite
+Content-Type: application/json
+
+{
+    "username": "josue1",
+    "favoriteName": "Salem455",
+    "direction" : "test"
+}
+###
+DELETE http://localhost:8081/favorites/deleteFavorite
+Content-Type: application/json
+
+{
+    "username": "josue1",
+    "favoriteName": "Salem455"
+}
+>>>>>>> 51c692df012366c6b46a4200ff4e0b5b3f1ccbc8

@@ -11,6 +11,8 @@ const deleteUser = require('./routes/userDeleteAll')
 const getUserFavorites = require('./routes/favoritesGetAllUserFavorites')
 const getSpecificFavorite = require('./routes/favoritesGetSpecificFavorites')
 const createFavorite = require('./routes/favoritesCreate')
+const editFavorite = require('./routes/favoritesEditFavorite')
+const deleteFavorite = require('./routes/favoritesDeleteFavorite')
 require('dotenv').config();
 const SERVER_PORT = 8081
 
@@ -26,6 +28,8 @@ app.use('/user', deleteUser)
 app.use('/favorites', getUserFavorites)
 app.use('/favorites', getSpecificFavorite)
 app.use('/favorites', createFavorite)
+app.use('/favorites', editFavorite)
+app.use('/favorites', deleteFavorite)
 app.listen(SERVER_PORT, (req, res) => {
     console.log(`The backend service is running on port ${SERVER_PORT} and waiting for requests.`);
 })
