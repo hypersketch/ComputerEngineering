@@ -6,7 +6,7 @@
     "configurations": [
     
         {
-            "cwd": "${workspaceFolder}/project-notes/server",
+            "cwd": "${workspaceFolder}/backend/server",
             "command": "npm start",
             "name": "project-notes: npm start",
             "request": "launch",
