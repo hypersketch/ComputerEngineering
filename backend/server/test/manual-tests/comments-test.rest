@@ -1,0 +1,27 @@
+GET http://localhost:8081/comments/marco
+###
+POST http://localhost:8081/comments/create
+Content-Type: application/json
+
+{
+    "username": "marco",
+    "userID": "abc123",
+    "comment": "This is a test",
+    "image" : "asfhua"
+}
+###
+DELETE http://localhost:8081/comments/delete
+Content-Type: application/json
+
+{
+    "userID": "abc123",
+    "username": "marcoG"
+}
+###
+PATCH http://localhost:8081/comments/edit
+Content-Type: application/json
+
+{
+    "userID": "abc123",
+    "comment": "This is a new comment"
+}
