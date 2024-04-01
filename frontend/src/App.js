@@ -9,6 +9,7 @@ import Navbar from "./components/navbar";
 import LandingPage from "./components/pages/landingPage";
 import HomePage from "./components/pages/homePage";
 import MbtaAlertsPage from "./components/pages/mbtaAlerts";
+import FavoritesPage from "./components/pages/favorites"
 import MbtaMyPage from  "./components/pages/mbtaMyPage"
 import Login from "./components/pages/loginPage";
 import Signup from "./components/pages/registerPage";
@@ -37,6 +38,7 @@ const App = () => {
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/mbtaAlerts" element={<MbtaAlertsPage />} />
           <Route exact path="/mbtaMyPage" element={<MbtaMyPage />} />
+          <Route exact path="/favorites" element={<FavoritesPage />} />
           <Route path="/privateUserProfile" element={<PrivateUserProfile />} />
         </Routes>
       </UserContext.Provider>
