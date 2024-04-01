@@ -38,7 +38,7 @@ const App = () => {
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/mbtaAlerts" element={<MbtaAlertsPage />} />
           <Route exact path="/mbtaMyPage" element={<MbtaMyPage />} />
-          <Route exact path="/favorites" element={<FavoritesPage />} />
+          <Route exact path="/favorites/:username" element={<FavoritesPage />} />
           <Route path="/privateUserProfile" element={<PrivateUserProfile />} />
         </Routes>
       </UserContext.Provider>
