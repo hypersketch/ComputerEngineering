@@ -7,6 +7,7 @@ router.delete('/deleteFavorite', async (req, res) => {
     
     const username= req.body.username
     const favoriteName= req.body.favoriteName
+    
     const user = await newUserModel.findOne({username: username})
     if (!user){
         res.status(408).send("UserID not found")
@@ -19,7 +20,9 @@ router.delete('/deleteFavorite', async (req, res) => {
         } else{
             // delete favorite
             await favoritesModel.findByIdAndDelete(fav)
-            return res.json({success: "True"})
+            // return updated resource
+            const newFav = await favoritesModel.find({username: username})
+            return res.json(newFav)
         }
 
     }

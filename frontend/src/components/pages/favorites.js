@@ -22,9 +22,17 @@ function editButtonClick(e){
   alert("Prompt Edit Boxes!")
 
 }
-function deleteButtonClick(e){
-  e.preventDefault();
-  alert("Prompt Deletion Text!")
+async function deleteButtonClick(username, favoriteName){
+  
+  async function deleteData() {
+    const result = await axios.delete(
+      `http://localhost:8081/favorites/deleteFavorite`, {data: {username: username, favoriteName: favoriteName}}
+    );
+    // update favorites
+    setFav(result.data);
+  }
+  await deleteData()
+
 }
 return (
   <div>
@@ -43,7 +51,7 @@ return (
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
       <button className='editButton' onClick={editButtonClick} style={{color:'white', backgroundColor: 'SlateGray'}}>Edit</button> <br/>
-      <button className='deleteButton' onClick={deleteButtonClick} style={{color:'white', backgroundColor: 'Red'}}>Delete</button></Card.Text>
+      <button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Red'}}>Delete</button></Card.Text>
       
       </Card.Body>
     </Card>
