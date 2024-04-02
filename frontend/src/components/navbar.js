@@ -16,9 +16,13 @@ export default function Navbar() {
   useEffect(() => {
   setUser(getUserInfo())
   }, [])
-  // const username = user.username 
-  // getUserInfo() not working so username is hard coded for now
-  const username = 'josue1'
+  // get username from user info to fill in href link param
+  let username;
+  if (user !== undefined){
+    username = user.username
+  }else{
+    username = ""
+  }
   // if (!user) return null   - for now, let's show the bar even not logged in.
   // we have an issue with getUserInfo() returning null after a few minutes
   // it seems.

@@ -16,7 +16,16 @@ function Favorites() {
 
     fetchData();
 }, [username]);
+function editButtonClick(e){
+  e.preventDefault();
+  // open boxes for user to edit information
+  alert("Prompt Edit Boxes!")
 
+}
+function deleteButtonClick(e){
+  e.preventDefault();
+  alert("Prompt Deletion Text!")
+}
 return (
   <div>
     {favs.map(fav => (
@@ -28,12 +37,14 @@ return (
       style={{ width: "30rem" }}
     >
       <Card.Body>
-      <Card.Title>Favorites</Card.Title>
+      <Card.Title>Favorite</Card.Title>
       <Card.Text>
       {fav.username} <br/>
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
-      <button className='editButton' style={{color:'white', backgroundColor: 'SlateGray'}}>Edit</button></Card.Text>
+      <button className='editButton' onClick={editButtonClick} style={{color:'white', backgroundColor: 'SlateGray'}}>Edit</button> <br/>
+      <button className='deleteButton' onClick={deleteButtonClick} style={{color:'white', backgroundColor: 'Red'}}>Delete</button></Card.Text>
+      
       </Card.Body>
     </Card>
     ))}
