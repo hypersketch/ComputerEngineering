@@ -12,7 +12,7 @@ router.get('/:username/:favorite', async (req, res) => {
         res.status(408).send("UserID not found")
         
     }else{
-        const fav = await favoritesModel.findOne({username: username,
+        const fav = await favoritesModel.find({username: username,
             favoriteName: favoriteName})
         if (!fav){
             res.status(409).send("Favorite not found")

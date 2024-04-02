@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
+  const [deleteSuccessMessage, setDeleteSuccess] = useState(false)
+  const [favorite, setFavorite] = useState('')
   useEffect(() => {
     async function fetchData() {
       const result = await axios(
@@ -30,12 +32,40 @@ function deleteButtonClick(username, favoriteName){
     );
     // update favorites
     setFav(result.data);
+    setFavorite('')
+    setDeleteSuccess(true)
+  
   }
   deleteData()
 
 }
+function submitHandler(e){
+  e.preventDefault()
+  // preventDefault stops page from reloading so we must reset success variable manually
+  setDeleteSuccess(false)
+  
+  async function specificFavorite() {
+    
+    const result = await axios.get(
+      `http://localhost:8081/favorites/${username}/${favorite}`,
+    );
+    // update favorites
+    setFav(result.data);
+    // reset favorite parameter variable we are using to search
+  }
+  specificFavorite()
+}
 return (
   <div>
+    {deleteSuccessMessage && (
+      <h1 style={{ color: "red" }}>Success in deleting!</h1>
+    )}
+    <form onSubmit={submitHandler}>
+    <input id='search' type='text' placeholder='favorite' 
+    value={favorite} 
+    onChange={(e)=> setFavorite(e.target.value)}></input>
+    <button type='submit'>Submit</button>
+    </form>
     {favs.map(fav => (
       <Card
       body
