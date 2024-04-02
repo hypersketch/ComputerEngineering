@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -64,7 +65,7 @@ return (
     <input id='search' type='text' placeholder='favorite' 
     value={favorite} 
     onChange={(e)=> setFavorite(e.target.value)}></input>
-    <button type='submit'>Submit</button>
+    <Button type='submit'>Submit</Button>
     </form>
     {favs.map(fav => (
       <Card
@@ -80,8 +81,8 @@ return (
       {fav.username} <br/>
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
-      <button className='editButton' onClick={editButtonClick} style={{color:'white', backgroundColor: 'SlateGray'}}>Edit</button> <br/>
-      <button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson'}}>Delete</button></Card.Text>
+      <Button className='editButton' onClick={editButtonClick} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
+      <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button></Card.Text>
       
       </Card.Body>
     </Card>
