@@ -20,7 +20,9 @@ router.patch('/editFavorite', async (req, res) => {
         } else{
             // edit favorite
             await favoritesModel.findByIdAndUpdate(fav, {direction: direction})
-            return res.json({success: "True"})
+            // return updated resource
+            const newFav = await favoritesModel.find({username: username})
+            return res.json(newFav)
         }
 
     }

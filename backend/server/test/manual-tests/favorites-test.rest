@@ -9,10 +9,8 @@ Content-Type: application/json
     "direction" : "outboundd"
 }
 ###
-<<<<<<< HEAD
 GET http://localhost:8081/favorites/josue1/Salem457
 Content-Type: application/json
-=======
 GET http://localhost:8081/favorites/josue1/Salem455
 ###
 PATCH http://localhost:8081/favorites/editFavorite
@@ -28,7 +26,45 @@ DELETE http://localhost:8081/favorites/deleteFavorite
 Content-Type: application/json
 
 {
-    "username": "josue1",
-    "favoriteName": "Salem455"
+    "username": "josue3",
+    "favoriteName": "RandomRoute73"
 }
->>>>>>> 51c692df012366c6b46a4200ff4e0b5b3f1ccbc8
+###
+POST http://localhost:8081/favorites/create
+Content-Type: application/json
+
+{
+    "username": "aaaaaa",
+    "favoriteName": "Salem99",
+    "direction" : "inbound"
+}
+###
+POST http://localhost:8081/favorites/create
+Content-Type: application/json
+
+{
+    "username": "josue3",
+    "favoriteName": "fav4",
+    "direction" : "inbound"
+}
+###
+GET http://localhost:8081/favorites/josue3/fav4
+###
+POST http://localhost:8081/favorites/create
+Content-Type: application/json
+
+{
+    "username": "josue3",
+    "favoriteName": "fav10",
+    "direction" : "inbound"
+}
+###
+PATCH http://localhost:8081/favorites/editFavorite
+Content-Type: application/json
+
+{
+    "username": "josue3",
+    "favoriteName": "fav10",
+    "direction" : "test"
+}
+###

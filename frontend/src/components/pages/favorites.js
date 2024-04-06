@@ -9,7 +9,6 @@ import Modal from "react-bootstrap/Modal"
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
-  const [deleteSuccessMessage, setDeleteSuccess] = useState(false)
   const [favorite, setFavorite] = useState('')
   const [show, setShow] = useState(false);
 
@@ -35,16 +34,16 @@ function deleteButtonClick(username, favoriteName){
     // update favorites
     setFav(result.data);
     setFavorite('')
-    setDeleteSuccess(true)
+    
   
   }
   deleteData()
 
 }
-function submitHandler(e){
+function searchHandler(e){
   e.preventDefault()
   // preventDefault stops page from reloading so we must reset success variable manually
-  setDeleteSuccess(false)
+  
   
   async function specificFavorite() {
     
@@ -57,21 +56,45 @@ function submitHandler(e){
   }
   specificFavorite()
 }
+function editHandler(e){
+  e.preventDefault()
+  // TODO make post request to backend to edit
+  handleClose()
+  let formData = new FormData(e.target)
+  let formDataObj = Object.fromEntries(formData.entries())
+  console.log(formDataObj)
+  console.log(typeof username)
+  async function editFavorite(){
+    
+    const result = await axios.patch(`http://localhost:8081/favorites/editFavorite`,
+    {username: username, favoriteName: formDataObj.favorite, 
+      direction: formDataObj.direction})
+    setFav(result.data)
+  }
+  editFavorite()
+
+}
 return (
   <div>
-    {deleteSuccessMessage && (
-      <h1 style={{ color: "red" }}>Success in deleting!</h1>
-    )}
-    <form onSubmit={submitHandler}>
-    <input id='search' type='text' placeholder='favorite' 
-    value={favorite} 
-    onChange={(e)=> setFavorite(e.target.value)}></input>
-    <Button type='submit'>Submit</Button>
-    </form>
+    <Card
+    body
+    className='mx-1 my-2'
+    style={{width:'30rem', maxHeight:'8rem',}}>
+    <Card.Body>
+      <Card.Text>
+        <Form style={{display:'flex'}} onSubmit={searchHandler}>
+          <Form.Group >
+            <Form.Control type='search' placeholder='favorite' value={favorite} 
+          onChange={(e)=> setFavorite(e.target.value)}></Form.Control>
+          </Form.Group>
+          <Button type='submit'>Submit</Button>
+        </Form>
+      </Card.Text>
+    </Card.Body>
+    </Card>
     {favs.map(fav => (
       <Card
       body
-      outline
       color="success"
       className="mx-1 my-2"
       style={{ width: "30rem" }}
@@ -79,22 +102,24 @@ return (
       <Card.Body>
       <Card.Title>Favorite</Card.Title>
       <Card.Text>
-      {fav.username} <br/>
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
       <Button className='editButton' onClick={handleShow} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
-      <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button></Card.Text>
+      <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button>
+      </Card.Text>
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Favorite</Modal.Title>
           </Modal.Header>
           <Modal.Footer
           style={{justifyContent: 'center', display:'block'}}>
-            <Form>
+            <Form onSubmit={editHandler}>
               <Form.Label>favorite name</Form.Label>
-              <Form.Control type='text' disabled placeholder={fav.favoriteName}></Form.Control>
+              <Form.Control type='text' name='favorite' value={fav.favoriteName} readOnly placeholder={fav.favoriteName}></Form.Control>
               <Form.Label>Direction</Form.Label>
-              <Form.Control type='text' placeholder={fav.direction}></Form.Control>
+              <Form.Control type='text' name='direction' placeholder={fav.direction}></Form.Control>
+              <Button type='submit'>Submit</Button>
             </Form>
           </Modal.Footer>
         
