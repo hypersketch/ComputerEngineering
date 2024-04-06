@@ -11,7 +11,7 @@ router.post('/create', async (req, res) => {
     const fav = await favoritesModel.findOne({ username: username , 
         favoriteName: favoriteName})
     if (fav){
-        return res.status(407).send({ message: "This specific favorite already exists", status: res.statusCode })
+        return res.status(450).send({ message: "This specific favorite already exists", status: res.statusCode })
     } else {
         if (!await newUserModel.findOne({username: username})){
             return res.status(408).send({message: "UserID not found"})

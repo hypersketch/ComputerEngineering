@@ -18,11 +18,20 @@ router.patch('/editFavorite', async (req, res) => {
         if (!fav){
             res.status(409).send("Favorite not found")
         } else{
-            // edit favorite
-            await favoritesModel.findByIdAndUpdate(fav, {direction: direction})
-            // return updated resource
-            const newFav = await favoritesModel.find({username: username})
-            return res.json(newFav)
+            const specificFavorite = await favoritesModel.findOne({username: username,
+                favoriteName: favoriteName, direction: direction})
+            if (!specificFavorite){
+                // edit favorite
+                await favoritesModel.findByIdAndUpdate(fav, {direction: direction})
+                
+                
+                // return updated resource
+                const newFav = await favoritesModel.find({username: username})
+                return res.json(newFav)
+            }else{
+                res.status(450).send("This specific favorite already exists")
+            }
+
         }
 
     }

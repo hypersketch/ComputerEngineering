@@ -11,7 +11,8 @@ function Favorites() {
   const {username} = useParams();
   const [favorite, setFavorite] = useState('')
   const [show, setShow] = useState(false);
-
+  const [modalFavName, setMFav] = useState('')
+  const [modalDirection, setMDir] = useState('')
   useEffect(() => {
     async function fetchData() {
       const result = await axios(
@@ -24,7 +25,13 @@ function Favorites() {
 }, [username]);
 
 const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
+// set modal names and values
+const handleShow = (name, direction) => {
+  setMFav(name)
+  setMDir(direction)
+  setShow(true)
+  
+};
 function deleteButtonClick(username, favoriteName){
   
   async function deleteData() {
@@ -66,10 +73,15 @@ function editHandler(e){
   console.log(typeof username)
   async function editFavorite(){
     
-    const result = await axios.patch(`http://localhost:8081/favorites/editFavorite`,
+    try{
+      const result = await axios.patch(`http://localhost:8081/favorites/editFavorite`,
     {username: username, favoriteName: formDataObj.favorite, 
       direction: formDataObj.direction})
-    setFav(result.data)
+      setFav(result.data)
+    }catch(error){
+      console.log(error)
+    }
+      
   }
   editFavorite()
 
@@ -104,7 +116,8 @@ return (
       <Card.Text>
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
-      <Button className='editButton' onClick={handleShow} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
+      
+      <Button className='editButton' onClick={() => handleShow(fav.favoriteName, fav.direction)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
       <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button>
       </Card.Text>
 
@@ -116,9 +129,9 @@ return (
           style={{justifyContent: 'center', display:'block'}}>
             <Form onSubmit={editHandler}>
               <Form.Label>favorite name</Form.Label>
-              <Form.Control type='text' name='favorite' value={fav.favoriteName} readOnly placeholder={fav.favoriteName}></Form.Control>
+              <Form.Control type='text' name='favorite' value={modalFavName} readOnly placeholder={modalFavName}></Form.Control>
               <Form.Label>Direction</Form.Label>
-              <Form.Control type='text' name='direction' placeholder={fav.direction}></Form.Control>
+              <Form.Control type='text' name='direction' placeholder={modalDirection}></Form.Control>
               <Button type='submit'>Submit</Button>
             </Form>
           </Modal.Footer>
