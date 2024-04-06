@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Modal from "react-bootstrap/Modal"
 
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
   const [deleteSuccessMessage, setDeleteSuccess] = useState(false)
   const [favorite, setFavorite] = useState('')
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       const result = await axios(
@@ -19,12 +23,9 @@ function Favorites() {
 
     fetchData();
 }, [username]);
-function editButtonClick(e){
-  e.preventDefault();
-  // open boxes for user to edit information
-  alert("Prompt Edit Boxes!")
 
-}
+const handleClose = () => setShow(false);
+const handleShow = () => setShow(true);
 function deleteButtonClick(username, favoriteName){
   
   async function deleteData() {
@@ -81,9 +82,23 @@ return (
       {fav.username} <br/>
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
-      <Button className='editButton' onClick={editButtonClick} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
+      <Button className='editButton' onClick={handleShow} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
       <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button></Card.Text>
-      
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Favorite</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer
+          style={{justifyContent: 'center', display:'block'}}>
+            <Form>
+              <Form.Label>favorite name</Form.Label>
+              <Form.Control type='text' disabled placeholder={fav.favoriteName}></Form.Control>
+              <Form.Label>Direction</Form.Label>
+              <Form.Control type='text' placeholder={fav.direction}></Form.Control>
+            </Form>
+          </Modal.Footer>
+        
+      </Modal>
       </Card.Body>
     </Card>
     ))}
