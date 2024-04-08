@@ -9,10 +9,11 @@ import Modal from "react-bootstrap/Modal"
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
-  const [favorite, setFavorite] = useState('')
+  const [favorite, setSearchFavorite] = useState('')
   const [show, setShow] = useState(false);
-  const [modalFavName, setMFav] = useState('')
-  const [modalDirection, setMDir] = useState('')
+  const [modalFavorite, setModalFav] = useState('')
+  const [modalFavDir, setModalFavDir] = useState([])
+  
   useEffect(() => {
     async function fetchData() {
       const result = await axios(
@@ -25,22 +26,30 @@ function Favorites() {
 }, [username]);
 
 const handleClose = () => setShow(false);
-// set modal names and values
-const handleShow = (name, direction) => {
-  setMFav(name)
-  setMDir(direction)
+// set modal information
+const handleShow = (fav) => {
+  setModalFav(fav)
   setShow(true)
-  
+  async function getDirections(){
+    const result = await axios.get(`https://api-v3.mbta.com/routes/${fav.favoriteName}`,)
+    const route = result.data.data
+    setModalFavDir(route.attributes.direction_names)
+  }
+  try{
+    getDirections()
+  }catch (error){
+    
+  }
 };
-function deleteButtonClick(username, favoriteName){
+function deleteButtonClick(fav){
   
   async function deleteData() {
     const result = await axios.delete(
-      `http://localhost:8081/favorites/deleteFavorite`, {data: {username: username, favoriteName: favoriteName}}
+      `http://localhost:8081/favorites/deleteFavorite`, {data: {username: fav.username, favoriteName: fav.favoriteName}}
     );
     // update favorites
     setFav(result.data);
-    setFavorite('')
+    setSearchFavorite('')
     
   
   }
@@ -63,7 +72,11 @@ function searchHandler(e){
   }
   specificFavorite()
 }
-function editHandler(e){
+function enableModalButton(e){
+  document.getElementById('submitButton').disabled = false
+
+}
+function modalSubmit(e){
   e.preventDefault()
   // TODO make post request to backend to edit
   handleClose()
@@ -97,7 +110,7 @@ return (
         <Form style={{display:'flex'}} onSubmit={searchHandler}>
           <Form.Group >
             <Form.Control type='search' placeholder='favorite' value={favorite} 
-          onChange={(e)=> setFavorite(e.target.value)}></Form.Control>
+          onChange={(e)=> setSearchFavorite(e.target.value)}></Form.Control>
           </Form.Group>
           <Button type='submit'>Submit</Button>
         </Form>
@@ -117,8 +130,8 @@ return (
       {fav.favoriteName} <br/>
       {fav.direction} <br/>
       
-      <Button className='editButton' onClick={() => handleShow(fav.favoriteName, fav.direction)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
-      <Button className='deleteButton' onClick={() => deleteButtonClick(fav.username, fav.favoriteName)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button>
+      <Button className='editButton' onClick={() => handleShow(fav)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
+      <Button className='deleteButton' onClick={() => deleteButtonClick(fav)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button>
       </Card.Text>
 
       <Modal show={show} onHide={handleClose}>
@@ -127,12 +140,19 @@ return (
           </Modal.Header>
           <Modal.Footer
           style={{justifyContent: 'center', display:'block'}}>
-            <Form onSubmit={editHandler}>
+            <Form onSubmit={modalSubmit}>
               <Form.Label>favorite name</Form.Label>
-              <Form.Control type='text' name='favorite' value={modalFavName} readOnly placeholder={modalFavName}></Form.Control>
+              <Form.Control type='text' name='favorite' value={modalFavorite.favoriteName} readOnly placeholder={modalFavorite.favoriteName}></Form.Control>
               <Form.Label>Direction</Form.Label>
-              <Form.Control type='text' name='direction' placeholder={modalDirection}></Form.Control>
-              <Button type='submit'>Submit</Button>
+              <Form.Select onChange={enableModalButton} defaultValue={'default'} name='direction'>
+                
+              <option value='default' disabled se>Direction</option>
+                {modalFavDir.map(direction =>(
+                  <option value={direction}>{direction}</option>
+                ))}
+    
+              </Form.Select>
+              <Button type='submit' id='submitButton' disabled>Submit</Button>
             </Form>
           </Modal.Footer>
         
