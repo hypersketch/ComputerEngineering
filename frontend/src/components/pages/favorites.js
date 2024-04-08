@@ -13,7 +13,7 @@ function Favorites() {
   const [show, setShow] = useState(false);
   const [modalFavorite, setModalFav] = useState('')
   const [modalFavDir, setModalFavDir] = useState([])
-  
+
   useEffect(() => {
     async function fetchData() {
       const result = await axios(
@@ -28,18 +28,32 @@ function Favorites() {
 const handleClose = () => setShow(false);
 // set modal information
 const handleShow = (fav) => {
+  
   setModalFav(fav)
-  setShow(true)
+  
   async function getDirections(){
-    const result = await axios.get(`https://api-v3.mbta.com/routes/${fav.favoriteName}`,)
-    const route = result.data.data
-    setModalFavDir(route.attributes.direction_names)
+    let exists = true
+
+    try{
+      const result = await axios.get(`https://api-v3.mbta.com/routes/${fav.favoriteName}`,)
+      const route = result.data.data
+      console.log(result.data)
+      setModalFavDir(route.attributes.direction_names)
+    }
+    catch(error){
+      exists = false
+    }
+    // if route exists then show modal
+    if (exists){
+      setShow(true)
+    }
   }
-  try{
-    getDirections()
-  }catch (error){
     
-  }
+    getDirections()
+    
+    
+  
+  
 };
 function deleteButtonClick(fav){
   
