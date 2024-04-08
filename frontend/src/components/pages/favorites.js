@@ -42,30 +42,33 @@ const handleShow = (fav) => {
     }
     catch(error){
       exists = false
+      console.log(error)
     }
     // if route exists then show modal
     if (exists){
       setShow(true)
     }
   }
-    
     getDirections()
     
-    
-  
-  
 };
 function deleteButtonClick(fav){
   
   async function deleteData() {
+    try{
+      
     const result = await axios.delete(
       `http://localhost:8081/favorites/deleteFavorite`, {data: {username: fav.username, favoriteName: fav.favoriteName}}
     );
     // update favorites
     setFav(result.data);
     setSearchFavorite('')
+    }
+    catch(error){
+      console.log(error)
+    }
     
-  
+
   }
   deleteData()
 
@@ -76,13 +79,17 @@ function searchHandler(e){
   
   
   async function specificFavorite() {
-    
+    try{
     const result = await axios.get(
       `http://localhost:8081/favorites/${username}/${favorite}`,
     );
     // update favorites
     setFav(result.data);
-    // reset favorite parameter variable we are using to search
+    }
+    catch (error){
+      console.log(error)
+    }
+    
   }
   specificFavorite()
 }
@@ -155,7 +162,7 @@ return (
           <Modal.Footer
           style={{justifyContent: 'center', display:'block'}}>
             <Form onSubmit={modalSubmit}>
-              <Form.Label>favorite name</Form.Label>
+              <Form.Label>Favorite Name</Form.Label>
               <Form.Control type='text' name='favorite' value={modalFavorite.favoriteName} readOnly placeholder={modalFavorite.favoriteName}></Form.Control>
               <Form.Label>Direction</Form.Label>
               <Form.Select onChange={enableModalButton} defaultValue={'default'} name='direction'>
