@@ -9,8 +9,7 @@ Content-Type: application/json
     "direction" : "outboundd"
 }
 ###
-GET http://localhost:8081/favorites/josue1/Salem457
-Content-Type: application/json
+
 GET http://localhost:8081/favorites/josue1/Salem455
 ###
 PATCH http://localhost:8081/favorites/editFavorite
@@ -48,7 +47,7 @@ Content-Type: application/json
     "direction" : "inbound"
 }
 ###
-GET http://localhost:8081/favorites/josue3/fav4
+GET http://localhost:8081/favorites/josue3
 ###
 POST http://localhost:8081/favorites/create
 Content-Type: application/json
@@ -68,3 +67,20 @@ Content-Type: application/json
     "direction" : "test"
 }
 ###
+POST http://localhost:8081/favorites/create
+Content-Type: application/json
+
+{
+    "username": "josue3",
+    "favoriteName": "Orange",
+    "direction" : "North"
+}
+###
+POST http://localhost:8081/favorites/create
+Content-Type: application/json
+
+{
+    "username": "josue3",
+    "favoriteName": "41",
+    "direction" : "Inbound"
+}
