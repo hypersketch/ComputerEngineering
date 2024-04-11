@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import axios from 'axios';
-import { useLinkClickHandler, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Modal from "react-bootstrap/Modal"
 import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet"
 import "leaflet/dist/leaflet.css"
@@ -26,6 +26,8 @@ function Favorites() {
   const [markerInfo, setMarkerInfo] = useState(null)
   
   useEffect(() => {
+    document.title = "Favorites Page"
+    document.icon = "../../images/marker-icon.png"
     async function fetchData() {
       const result = await axios.get(
         `http://localhost:8081/favorites/${username}`,
@@ -49,6 +51,7 @@ useEffect(() => {
   
   mapFavs()
   
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [favs])
 useEffect(()=>{
   async function lines(){
