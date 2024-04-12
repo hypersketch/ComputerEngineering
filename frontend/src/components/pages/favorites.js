@@ -15,16 +15,19 @@ function Favorites() {
   const [show, setShow] = useState(false);
   const [selectedFavorite, setSelectedFav] = useState('')
   const [mapState, setMapState] = useState(null)
+
   // Marker State [start, end] - 0 and 1
   const [markerState, setMarkerState] = useState(null)
+
   // not a favorite but a list of directions in a route found using the favoriteName
   const [modalFavDir, setModalFavDir] = useState([])
-
-  const [fInfo, fInfoSet] = useState({})
+  const [fInfo, fInfoSet] = useState(false)
   const [modalSubmitDisabled, setModalSubmit] = useState(true)
   const [lineID, setLine] = useState({})
   const [markerInfo, setMarkerInfo] = useState(null)
-  
+  const [reload, setReload] = useState(false)
+  const [pageLoaded, setPageLoaded] = useState(false)
+
   useEffect(() => {
     document.title = "Favorites Page"
     document.icon = "../../images/marker-icon.png"
@@ -35,23 +38,31 @@ function Favorites() {
       setFav(result.data);
     }
     fetchData();
-}, [username]);
+    
+}, [username, reload]);
 
 useEffect(() => {
+  
   async function mapFavs(){
-    for (const fav of favs){
-      const route = await getFavRouteInfo(fav)
-      if (route !== null){
-        console.log("route not null")
-        fInfoSet(oldState => ({...oldState, [fav.favoriteName]: route}))
-      }
+    const favIds = favs.map(fav =>fav.favoriteName)
+    const routes = await getFavRouteInfo(favIds.join(','))
+    if (routes === null) return
+    // order the routes to match order of favIds
+    const orderedData = favIds.map(id => routes.find(route => parseInt(route.id) === id || route.id === id))
+    const updatedState = {} 
+    favIds.forEach((id, index) => updatedState[id] = orderedData[index])
+
     
-    }
+    fInfoSet(updatedState)
   }
   
-  mapFavs()
-  
-// eslint-disable-next-line react-hooks/exhaustive-deps
+  if (favs.length > 0){
+    mapFavs()
+  }else {
+    console.log("0")
+  }
+  setPageLoaded(true)
+
 }, [favs])
 useEffect(()=>{
   async function lines(){
@@ -67,7 +78,7 @@ useEffect(()=>{
   
     lines()
   
-}, [favs, fInfo])
+}, [fInfo])
 async function getLineName(id){
   
     if (id!== undefined){
@@ -81,23 +92,18 @@ async function getLineName(id){
     }
   
 }
-async function getFavRouteInfo(fav) {
+async function getFavRouteInfo(id) {
     
       try{
-        const result = await axios.get(`https://api-v3.mbta.com/routes/${fav.favoriteName}`,)
+        const result = await axios.get(`https://api-v3.mbta.com/routes?filter[id]=${id}`,)
         const routeInfo = result.data.data
-        if(fInfo[fav.favoriteName] == null){
-          return (routeInfo)}
-        else {
-          return null
-        }
-      }catch(error){
-        return(error)
+       
+        return (routeInfo)}
+      catch(error){
+        console.log(error)
+        return(null)
       }
 
-    
-   
-    
 }
 const handleClose = () => setShow(false);
 // set modal information
@@ -135,16 +141,17 @@ function deleteButtonClick(fav){
       `http://localhost:8081/favorites/deleteFavorite`, {data: {username: fav.username, favoriteName: fav.favoriteName}}
     );
     // update favorites
-    setFav(result.data);
     setSearchFavorite('')
+    setFav(result.data);
     }
     catch(error){
       console.log(error)
     }
 
   }
-  deleteData()
   setMapState(null)
+  deleteData()
+  setReload(true)
 
 }
 async function specificFavorite() {
@@ -210,12 +217,9 @@ function mapTest(fav){
     const newL = result.data.data.map(item => [item.attributes.latitude, item.attributes.longitude])
     const sc = newL[0]
     const ec = newL.at(-1)
-    // const start = await axios.get(`https://api-v3.mbta.com/stops?filter[latitude]=${sc[0]}&filter[longitude]=${sc[1]}&filter[radius]=0.001&sort=distance&page[limit]=1`)
-    // const end = await axios.get(`https://api-v3.mbta.com/stops?filter[latitude]=${ec[0]}&filter[longitude]=${ec[1]}&filter[radius]=0.001&sort=-distance&page[limit]=1`)
     const start = result.data.data[0]
     const end = result.data.data.at(-1)
     setMapState(newL)
-    // setMarkerInfo([start.data.data[0], end.data.data[0]])
     setMarkerInfo([start, end])
     setMarkerState([sc, ec])
 
@@ -226,7 +230,9 @@ function mapTest(fav){
 return (
   
   <div style={{display: 'flex', justifyContent:'space-evenly', padding: '10px',}}>
-    <div>
+    {pageLoaded && (
+      <>
+      <div>
     <Card
     body
     className='mx-1 my-2'
@@ -243,8 +249,9 @@ return (
       </Card.Text>
     </Card.Body>
     </Card> 
-
-    {favs.map((fav) => (
+    {/*Load cards only once fInfo has loaded*/}
+    {Object.keys(fInfo).length > 0 && (
+      favs.map((fav) => (
         <Card
         body
         color="success"
@@ -257,12 +264,12 @@ return (
           Route - {fav.favoriteName}<br/>
           {/* {fInfo[fav.favoriteName]?.relationships?.line?.data?.id} */}
           Line - {lineID[fav.favoriteName]}
-          {}
         </Card.Title>
         <Card.Text>
         
-        {fInfo[fav.favoriteName]?.attributes?.long_name}<br/> 
-                Direction - {fav.direction} <br/>
+        {fInfo && (fInfo[fav.favoriteName]?.attributes.long_name)}<br/> 
+      
+            Direction - {fav.direction} <br/>
         
         <Button className='editButton' onClick={() => handleShow(fav)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
         <Button className='deleteButton' onClick={() => deleteButtonClick(fav)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button><br/>
@@ -295,7 +302,8 @@ return (
         </Modal>
         </Card.Body>
       </Card>
-      ))}
+      )))
+    }
     
     
   </div>
@@ -328,7 +336,8 @@ return (
           </>
         )}
        </MapContainer>
-    </div>
+    </div></>
+    )}
   </div>
   
     );
