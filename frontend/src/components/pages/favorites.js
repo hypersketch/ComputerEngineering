@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal"
 import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
+import { useMap } from 'react-leaflet';
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
@@ -17,7 +18,7 @@ function Favorites() {
   const [mapState, setMapState] = useState(null)
 
   // Marker State [start, end] - 0 and 1
-  const [markerState, setMarkerState] = useState(null)
+  const [markerState, setMarkerState] = useState([])
 
   // not a favorite but a list of directions in a route found using the favoriteName
   const [modalFavDir, setModalFavDir] = useState([])
@@ -229,14 +230,18 @@ function mapTest(fav){
 
 return (
   
-  <div style={{display: 'flex', justifyContent:'space-evenly', padding: '10px',}}>
+  <div style={{display: 'flex', justifyContent:'space-evenly', padding: '10px',paddingTop: "30px"}}>
     {pageLoaded && (
       <>
       <div>
     <Card
     body
+    key={
+      'searchBarCard'
+    }
     className='mx-1 my-2'
     style={{width:'30rem', maxHeight:'8rem',}}>
+  
     <Card.Body>
       <Card.Text>
         <Form style={{display:'flex'}} onSubmit={searchHandler}>
@@ -257,7 +262,7 @@ return (
         color="success"
         className="mx-1 my-2"
         style={{ width: "30rem" }}
-
+        key={fav.favoriteName}
       >
         <Card.Body>
         <Card.Title>
@@ -308,12 +313,12 @@ return (
     
   </div>
   <div style={{"height": "900px", "width": "900px",marginTop: '8px'}}>
-    <MapContainer style={{height: "inherit", width:"inherit"}} center={[42.5030595,-70.890669]} zoom={11}>
+  <MapContainer style={{height: "inherit", width:"inherit"}} center={[42.5030595,-70.890669]} zoom={11}>
       <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'>
       
       </TileLayer>
-      {mapState && markerState && markerInfo && ( 
+      {mapState && markerState.length > 0 && markerInfo && ( 
         <>
           <Polyline color='black' weight={3} opacity={1} positions={mapState}></Polyline>
 
@@ -334,7 +339,9 @@ return (
             </Popup>
           </Marker>
           </>
-        )}
+        )}\
+        {/* Pass in start coordinates*/}
+        {markerState.length >0 && (<RecenterMap markerState={markerState[0]}/>)}
        </MapContainer>
     </div></>
     )}
@@ -342,5 +349,18 @@ return (
   
     );
 }
-
+function RecenterMap({markerState}){
+  const map = useMap()
+  useEffect(()=>{
+    console.log(markerState)
+    try{
+      map.flyTo([markerState[0], markerState[1]], 10.9, {
+        duration: 2.0,
+        animate:true
+      })
+    }catch(error){
+      console.log(error)
+    }
+  }, [markerState, map])
+}
 export default Favorites;
