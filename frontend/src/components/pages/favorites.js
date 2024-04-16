@@ -9,6 +9,8 @@ import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
 import { useMap } from 'react-leaflet';
+import getUserInfo from '../../utilities/decodeJwt';
+
 function Favorites() {
   const [favs, setFav] = useState([]);
   const {username} = useParams();
@@ -16,7 +18,8 @@ function Favorites() {
   const [show, setShow] = useState(false);
   const [selectedFavorite, setSelectedFav] = useState('')
   const [mapState, setMapState] = useState(null)
-
+  
+  const loggedUser = getUserInfo()
   // Marker State [start, end] - 0 and 1
   const [markerState, setMarkerState] = useState([])
 
@@ -28,7 +31,7 @@ function Favorites() {
   const [markerInfo, setMarkerInfo] = useState(null)
   const [reload, setReload] = useState(false)
   const [pageLoaded, setPageLoaded] = useState(false)
-
+  const [viewingSelf, setViewingSelf] = useState(false)
   useEffect(() => {
     document.title = "Favorites Page"
     document.icon = "../../images/marker-icon.png"
@@ -39,6 +42,10 @@ function Favorites() {
       setFav(result.data);
     }
     fetchData();
+    if (loggedUser != undefined){
+      if (loggedUser.username == username)
+      setViewingSelf(true)
+    }
     
 }, [username, reload]);
 
@@ -267,7 +274,6 @@ return (
         <Card.Body>
         <Card.Title>
           Route - {fav.favoriteName}<br/>
-          {/* {fInfo[fav.favoriteName]?.relationships?.line?.data?.id} */}
           Line - {lineID[fav.favoriteName]}
         </Card.Title>
         <Card.Text>
@@ -276,8 +282,8 @@ return (
       
             Direction - {fav.direction} <br/>
         
-        <Button className='editButton' onClick={() => handleShow(fav)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/>
-        <Button className='deleteButton' onClick={() => deleteButtonClick(fav)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button><br/>
+        {viewingSelf && (<><Button className='editButton' onClick={() => handleShow(fav)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/></>)}
+        {viewingSelf && (<><Button className='deleteButton' onClick={() => deleteButtonClick(fav)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button><br/></>)}
         <Button className='mapButton' onClick={() => mapTest(fav)} style={{color:'white', backgroundColor: 'green', minWidth: '70px'}}>Map</Button>
         </Card.Text>
   
