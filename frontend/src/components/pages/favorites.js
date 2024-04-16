@@ -32,12 +32,13 @@ function Favorites() {
   const [reload, setReload] = useState(false)
   const [pageLoaded, setPageLoaded] = useState(false)
   const [viewingSelf, setViewingSelf] = useState(false)
+  const url = `${process.env.REACT_APP_BACKEND_SERVER_URI}`
   useEffect(() => {
     document.title = "Favorites Page"
     document.icon = "../../images/marker-icon.png"
     async function fetchData() {
       const result = await axios.get(
-        `http://localhost:8081/favorites/${username}`,
+        `${url}/favorites/${username}`,
       );
       setFav(result.data);
     }
@@ -148,7 +149,7 @@ function deleteButtonClick(fav){
     try{
       
     const result = await axios.delete(
-      `http://localhost:8081/favorites/deleteFavorite`, {data: {username: fav.username, favoriteName: fav.favoriteName}}
+      `${url}/favorites/deleteFavorite`, {data: {username: fav.username, favoriteName: fav.favoriteName}}
     );
     // update favorites
     setSearchFavorite('')
@@ -168,7 +169,7 @@ async function specificFavorite() {
   // searchFavorite is '' - so if nothing is entered then route will simply return all favorites
   try{
   const result = await axios.get(
-    `http://localhost:8081/favorites/${username}/${searchFavorite}`,
+    `${url}/favorites/${username}/${searchFavorite}`,
   );
   // update favorites
   setFav(result.data);
@@ -193,7 +194,7 @@ function modalSubmit(e){
   async function editFavorite(){
     
     try{
-      const result = await axios.patch(`http://localhost:8081/favorites/editFavorite`,
+      const result = await axios.patch(`${url}/favorites/editFavorite`,
     {username: username, favoriteName: formDataObj.favorite, 
       direction: formDataObj.direction})
       // if a favorite is displayed after filter then continue to show that favorite
