@@ -1,0 +1,44 @@
+.mapDiv {
+    height: 800px;
+    width: 1000px;
+    margin-top: 0px;
+}
+
+#root{
+    max-height: 1000px;
+    box-sizing: content-box;
+}
+.main {
+    padding-top: 20px;
+    max-height: 800px;
+    display: flex;
+    
+}
+.main > *{
+    margin: 10px;
+}
+.cardColumn {
+    
+    
+    min-width: 480px;
+}
+.fav {
+    
+    margin-top: 20px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scroll-snap-type: y mandatory;
+}
+.card{
+    width: 30rem;
+    max-height:20rem;
+    display: block;
+    scroll-snap-align: start;
+    
+}
+.searchBar{
+    display: flex;
+    justify-content: space-evenly;
+}

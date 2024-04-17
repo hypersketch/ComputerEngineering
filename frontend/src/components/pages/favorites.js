@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
+import Dropdown from "react-bootstrap/Dropdown"
+import DropdownButton from "react-bootstrap/DropdownButton"
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -10,6 +13,7 @@ import "leaflet/dist/leaflet.css"
 import L from "leaflet"
 import { useMap } from 'react-leaflet';
 import getUserInfo from '../../utilities/decodeJwt';
+import "../styles/Favorites.css"
 
 function Favorites() {
   const [favs, setFav] = useState([]);
@@ -239,22 +243,20 @@ function mapTest(fav){
 }
 
 return (
-  
-  <div style={{display: 'flex', justifyContent:'space-evenly', padding: '10px',paddingTop: "30px"}}>
+  <div className="main" style={{display:"flex", boxSizing:"content-box"}}>
+  <div className ="cardColumn">
     {pageLoaded && (
       <>
-      <div>
     <Card
     body
     key={
       'searchBarCard'
     }
-    className='mx-1 my-2'
-    style={{width:'30rem', maxHeight:'8rem',}}>
+    >
   
     <Card.Body>
       <Card.Text>
-        <Form style={{display:'flex'}} onSubmit={searchHandler}>
+        <Form className="searchBar" onSubmit={searchHandler}>
           <Form.Group >
             <Form.Control type='search' placeholder='favorite' value={searchFavorite} 
           onChange={(e)=> setSearchFavorite(e.target.value)}></Form.Control>
@@ -264,15 +266,19 @@ return (
       </Card.Text>
     </Card.Body>
     </Card> 
+    <div className='fav'>
     {/*Load cards only once fInfo has loaded*/}
+    
     {Object.keys(fInfo).length > 0 && (
       favs.map((fav) => (
         <Card
         body
         color="success"
-        className="mx-1 my-2"
-        style={{ width: "30rem" }}
+        
+        className='favCard'
         key={fav.favoriteName}
+        
+        
       >
         <Card.Body>
         <Card.Title>
@@ -284,11 +290,21 @@ return (
         {fInfo && (fInfo[fav.favoriteName]?.attributes.long_name)}<br/> 
       
             Direction - {fav.direction} <br/>
+          <ButtonGroup >
+          <Button onClick={() => mapTest(fav)}>map</Button>
+          
+          {viewingSelf && (
+          <DropdownButton className="drop" as={ButtonGroup} title="manage" id="bg-nested-dropdown">
+            <Dropdown.Item onClick={() => handleShow(fav)}>
+            Edit
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => deleteButtonClick(fav)}>
+              Delete
+            </Dropdown.Item>
+        </DropdownButton>
         
-        {viewingSelf && (<><Button className='editButton' onClick={() => handleShow(fav)} style={{color:'white', backgroundColor: 'SlateGray', minWidth: '70px'}}>Edit</Button> <br/></>)}
-        {viewingSelf && (<><Button className='deleteButton' onClick={() => deleteButtonClick(fav)} style={{color:'white', backgroundColor: 'Crimson', minWidth: '70px'}}>Delete</Button><br/></>)}
-        <Button className='mapButton' onClick={() => mapTest(fav)} style={{color:'white', backgroundColor: 'green', minWidth: '70px'}}>Map</Button>
-        </Card.Text>
+        )}
+        </ButtonGroup></Card.Text>
   
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
@@ -309,7 +325,10 @@ return (
                   ))}
       
                 </Form.Select>
-                <Button type='submit' id='submitButton' disabled={modalSubmitDisabled}>Submit</Button>
+                <br/>
+                <div className="d-grid gap-2">
+                <Button size="lg" type='submit' id='submitButton' disabled={modalSubmitDisabled}>Submit</Button>
+              </div>
               </Form>
             </Modal.Footer>
           
@@ -318,10 +337,17 @@ return (
       </Card>
       )))
     }
+    </div>
     
     
+  
+  </>
+    )}
   </div>
-  <div style={{"height": "900px", "width": "900px",marginTop: '8px'}}>
+
+
+  
+  <div className="mapDiv"  >
   <MapContainer style={{height: "inherit", width:"inherit"}} center={[42.5030595,-70.890669]} zoom={11}>
       <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'>
@@ -352,10 +378,8 @@ return (
         {/* Pass in start coordinates*/}
         {markerState.length >0 && (<RecenterMap markerState={markerState[0]}/>)}
        </MapContainer>
-    </div></>
-    )}
-  </div>
-  
+    </div>
+    </div>
     );
 }
 function RecenterMap({markerState}){
@@ -363,8 +387,8 @@ function RecenterMap({markerState}){
   useEffect(()=>{
     console.log(markerState)
     try{
-      map.flyTo([markerState[0], markerState[1]], 10.9, {
-        duration: 2.0,
+      map.flyTo([markerState[0], markerState[1]], 12, {
+        duration: 1.0,
         animate:true
       })
     }catch(error){
