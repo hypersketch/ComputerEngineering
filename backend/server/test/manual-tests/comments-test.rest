@@ -1,10 +1,10 @@
-GET http://localhost:8081/comments/marco1
+GET http://localhost:8081/comments/marcoG
 ###
 POST http://localhost:8081/comments/create
 Content-Type: application/json
 
 {
-    "username": "marco1",
+    "username": "marcoG",
     "userID": "abc123",
     "comment": "This is a test",
     "image" : "asfhua"
@@ -23,5 +23,6 @@ Content-Type: application/json
 
 {
     "userID": "abc123",
-    "comment": "This is a new comment"
+    "comment": "This is a new comment",
+    "image": "abc"
 }

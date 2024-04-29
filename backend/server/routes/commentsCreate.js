@@ -3,6 +3,7 @@ const router = express.Router();
 const commentsModel = require("../models/commentsModel")
 const newUserModel = require('../models/userModel');
 const { default: mongoose } = require("mongoose");
+const userModel = require("../models/userModel");
 
 router.post('/create', async (req, res) => {
     
@@ -16,6 +17,9 @@ router.post('/create', async (req, res) => {
     comment: comment,
     image: image
   })
+
+  
+
 
   const saveNewComment = await createNewComment.save()
   res.send(saveNewComment)
